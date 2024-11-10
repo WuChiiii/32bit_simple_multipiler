@@ -35,17 +35,17 @@ Adder32 overflow(
         if(count < 0) begin
         end else begin
             if(B[count]) begin
-                result[31:0] = tmp;
+                result[31:0] <= tmp;
                 if(Cout) begin
-                    result[63:32] = overflowtmp;
+                    result[63:32] <= overflowtmp;
                 end else begin
                 end
             end else begin
             end
             if(count != 0) begin
-                result = result << 1;
+                result <= result << 1;
             end
-            count = count - 1;
+            count <= count - 1;
         end
     end
 
