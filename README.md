@@ -31,7 +31,7 @@ module Full_adder (
     output Cout, Sum,
     input A, B, Cin
 );
-```verilog
+```
 
 ##乘法器演算法
 1.先初始化各種暫存器為0
