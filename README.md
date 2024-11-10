@@ -33,7 +33,7 @@ module Full_adder (
 );
 ```
 
-##乘法器演算法
+## 乘法器演算法
 1.先初始化各種暫存器為0
 2.設置一個counter去指向被乘數B的32bit，從MSB(B[31])開始
 3.如果當下counter指向的數字是1，那我就把A的32bit加到result的最右邊(result[31:0])
@@ -41,19 +41,19 @@ module Full_adder (
 5.判斷完一次將result左移一次，若是最後一次運算則不移
 6.counter右移(counter--)
 
-##testbench設計
+## testbench設計
 設計簡單的clock，挑選三個常數做乘法，觀察結果是否正確
 
-##compile & run
+## compile & run
 首先要下載iverilog: sudo apt iverilog
 
-###編譯指令
+### 編譯指令
 iverilog -o mul_tb testbench.v mul.v Adder32.v Full_adder.v
 vvp mul_tb
 
-###波形圖指令
+### 波形圖指令
 可用來觀看輸出訊號結果
 gtkwave waveform.vcd
 
-##使用注意事項
+## 使用注意事項
 此乘法器為無號數乘法器，因此負數的結果將會是一個很大的正數，再將成數被乘數輸入進去mul前要注意先將rst設乘1初始化內建的count以及結果result。
