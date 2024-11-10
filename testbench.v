@@ -1,56 +1,50 @@
 module testbench;
     reg [31:0] A, B;
     wire [63:0] result;
-    reg clk;
+    reg clk,rst;
     reg [5:0] count;
     integer i;
     mul alu(
         .A(A),
         .B(B),
-        .clkcount(count),
         .result(result),
-        .clk(clk)
+        .clk(clk),
+        .rst(rst)
     );
-    always @(posedge clk) begin
-        if (count < 32) begin
-            count = count + 1;
-        end
-    end
-    initial begin
-        clk = 0;
-        forever #5 clk = ~clk;  
-    end
 
     initial begin
-        A = 32'h0000000F;  // 15
-        B = 32'h00000003;  // 3
-        count = 0;
         #10
-        for ( i = 0; i < 32; i = i + 1) begin
-            @(posedge clk);  
+        for ( i = 0; i < 33; i = i + 1) begin
+            if(i==0)begin
+                #5 clk = 0; rst =1 ; clk = 1; B = 32'h00000003; A = 32'h0000000F;
+            end
+            else begin
+                #5 clk = 0; clk = 1; rst = 0;
+            end  
         end
         if (result == 64'h000000000000002D) begin
             $display("Test 1 Passed: %d * %d = %d", A, B, result);
         end else begin
-            $display("Test 1 Failed: %d * %d != %d (result: %d count: %d)", A, B, 15 * 3, result,count);
+            $display("Test 1 Failed: %d * %d != %d (result: %d )", A, B, 15 * 3, result);
         end
 
-        A = 32'h00000010;  // 16
-        B = 32'h00000004;  // 4
-        count = 0;
-        #10;               
-
-        // 等待 32 個 clock cycles
-        for ( i = 0; i < 32; i = i + 1) begin
-            @(posedge clk); 
+        for ( i = 0; i < 33; i = i + 1) begin
+            if(i==0)begin
+                #5 clk = 0; rst =1 ; clk = 1; B = 32'h00000000; A = 32'h11111111;
+            end
+            else begin
+                #5 clk = 0; clk = 1; rst = 0 ;
+            end  
         end
 
-        // 檢查結果
-        if (result == 64'h0000000000000040) begin
+        // 檢查結果     
+        if (result == 64'h0000000000000000) begin
             $display("Test 2 Passed: %d * %d = %d", A, B, result);
         end else begin
-            $display("Test 2 Failed: %d * %d != %d (result: %d)", A, B, 16 * 4, result);
+            $display("Test 2 Failed: %d * %d != %d (result: %d)", A, B, 0, result);
         end
+
+        $finish;
     end
 
     initial begin

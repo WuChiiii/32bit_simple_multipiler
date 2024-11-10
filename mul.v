@@ -3,11 +3,12 @@ module mul(
     input wire[31:0] A,
     input wire[31:0] B,
     input wire clk,
-    input wire [5:0]clkcount,
+    input wire rst,
     output reg[63:0] result
 );
     wire [31:0]tmp, overflowtmp;
     wire Cout;
+    reg [5:0]count;
 
 Adder32 plus(
     .Cout(Cout),
@@ -24,17 +25,17 @@ Adder32 overflow(
     .Cin(1'b0)
 );
     always @(*) begin
-        if(clkcount == 0) begin
+        if(rst) begin
             result=64'b0;
+            count = 31;
         end else begin
         end
     end
 
     always @(posedge clk) begin
-        if(clkcount > 32) begin
+        if(count < 0) begin
         end else begin
-            result = result << 1;
-            if(B[32-clkcount]) begin
+            if(B[count]) begin
                 result[31:0] = tmp;
                 if(Cout) begin
                     result[63:32] = overflowtmp;
@@ -42,6 +43,10 @@ Adder32 overflow(
                 end
             end else begin
             end
+            if(count != 0) begin
+                result = result << 1;
+            end
+            count = count - 1;
         end
     end
 
